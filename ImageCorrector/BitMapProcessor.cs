@@ -109,6 +109,51 @@ namespace ImageCorrector
             return new Pixel((byte)R, (byte)G, (byte)B);
         }
 
+        public Pixel[,] Grey(Pixel[,] pixelMap)
+        {
+            for (int i = 0; i < pixelMap.GetUpperBound(0) + 1; i++)
+                for (int j = 0; j < pixelMap.GetUpperBound(1) + 1; j++)
+                {
+                    var av = (pixelMap[i, j].R + pixelMap[i, j].G + pixelMap[i, j].B) / 3;
+                    pixelMap[i, j].R = (byte)av;
+                    pixelMap[i, j].G = (byte)av;
+                    pixelMap[i, j].B = (byte)av;
+                }
+            return pixelMap;
+        }
+
+        public Pixel[,] Sepia(Pixel[,] pixelMap, int depth)
+        {
+            for (int i = 0; i < pixelMap.GetUpperBound(0) + 1; i++)
+                for (int j = 0; j < pixelMap.GetUpperBound(1) + 1; j++)
+                {
+                    var av = (pixelMap[i, j].R + pixelMap[i, j].G + pixelMap[i, j].B) / 3;
+                    pixelMap[i, j].R = (byte)(av + 2 * depth > 255 ? 255 : av + 2 * depth);
+                    pixelMap[i, j].G = (byte)(av + depth > 255 ? 255 : av + depth);
+                    pixelMap[i, j].B = (byte)av;
+                }
+            return pixelMap;
+        }
+
+        public Pixel[,] Noise(Pixel[,] pixelMap, int depth)
+        {
+            long R, G, B;
+            for (int i = 0; i < pixelMap.GetUpperBound(0) + 1; i++)
+                for (int j = 0; j < pixelMap.GetUpperBound(1) + 1; j++)
+                {
+                    Random rnd = new Random();
+                    var rand = Convert.ToInt32(Math.Floor((rnd.NextDouble() - 1) * depth));
+                    R = pixelMap[i, j].R + rand;
+                    G = pixelMap[i, j].G + rand;
+                    B = pixelMap[i, j].B + rand;
+                    if (R > 255) R = 255; if (G > 255) G = 255; if (B > 255) B = 255;
+                    if (R < 0) R = 0; if (G < 0) G = 0; if (B < 0) B = 0;
+                    pixelMap[i, j].R = (byte)R;
+                    pixelMap[i, j].G = (byte)G;
+                    pixelMap[i, j].B = (byte)B;
+                }
+            return pixelMap;
+        }
 
         public Pixel[,] GreyWorld(Pixel[,] pixelMap)
         {
@@ -172,7 +217,16 @@ namespace ImageCorrector
                 {
                     denom += mask[i, j];
                 }
+            var sizeY = pixelMap.GetUpperBound(0) + 1;
+            var sizeX = pixelMap.GetUpperBound(1) + 1;
+            Pixel[,] newMap = new Pixel[sizeY, sizeX];
+            for (int i = 0; i < pixelMap.GetUpperBound(0) + 1; i++)
+                for (int j = 0; j < pixelMap.GetUpperBound(1) + 1; j++)
+                {
+                    newMap[i, j] = pixelMap[i, j];
+                }
             if (denom == 0) denom = 1;
+
             for (int i = maskY / 2; i < pixelMap.GetUpperBound(0) + 1 - maskY / 2; i++)
                 for (int j = maskX / 2; j < pixelMap.GetUpperBound(1) + 1 - maskX / 2; j++)
                 {
@@ -187,9 +241,9 @@ namespace ImageCorrector
                     R = R / denom; G = G / denom; B = B / denom;
                     if (R > 255) R = 255; if (G > 255) G = 255; if (B > 255) B = 255;
                     if (R < 0) R = 0; if (G < 0) G = 0; if (B < 0) B = 0;
-                    pixelMap[i, j] = new Pixel((byte)R, (byte)G, (byte)B);
+                    newMap[i, j] = new Pixel((byte)R, (byte)G, (byte)B);
                 }
-            return pixelMap;
+            return newMap;
         }
 
         public Pixel[,] Spreading(Pixel[,] pixelMap)

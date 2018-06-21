@@ -14,6 +14,7 @@ namespace ImageCorrection
     public partial class Form1 : Form
     {
         public string filename;
+        public Bitmap bmp;
         public Form1()
         {
             InitializeComponent();
@@ -23,90 +24,153 @@ namespace ImageCorrection
         {
             if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
-            // получаем выбранный файл
             filename = openFileDialog1.FileName;
-            // читаем файл в строку
+            bmp = (Bitmap)Bitmap.FromFile(filename);
+            pictureBox1.Image = bmp;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.AutoLevels(a);
-            var c = b.GetBitmap(a);
-            b.Save(c,"c:/1/1.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.GreyWorld(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/2.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.GammaCorrection(a, (float)trackBar1.Value / 10);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/3.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.IdealFilter(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/4.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.Spreading(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/5.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.Harshness(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/6.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.Embossing(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/7.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.Watercolor(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/8.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
+            if (bmp == null)
+                return;
             BitMapProcessor b = new BitMapProcessor();
-            var a = b.GetPixels(filename);
+            var a = b.GetPixels(bmp);
             a = b.Negative(a);
-            var c = b.GetBitmap(a);
-            b.Save(c, "c:/1/8.bmp");
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            if (bmp == null)
+                return;
+            BitMapProcessor b = new BitMapProcessor();
+            var a = b.GetPixels(bmp);
+            a = b.Grey(a);
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            if (bmp == null)
+                return;
+            BitMapProcessor b = new BitMapProcessor();
+            var a = b.GetPixels(bmp);
+            a = b.Sepia(a, trackBar2.Value);
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            if (bmp == null)
+                return;
+            BitMapProcessor b = new BitMapProcessor();
+            var a = b.GetPixels(bmp);
+            a = b.Noise(a, trackBar3.Value);
+            bmp = b.GetBitmap(a);
+            pictureBox1.Image = bmp;
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            if (bmp == null)
+                return;
+            saveFileDialog1.Filter = "Изображение|*.bmp";
+            if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            var savename = saveFileDialog1.FileName;
+            bmp.Save(savename);
         }
     }
 }
